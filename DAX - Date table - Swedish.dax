@@ -1,0 +1,74 @@
+﻿Beställningsdatum = 
+--
+--     Configuration
+--
+VAR __FirstDayOfWeek = 1
+----------------------------------------
+VAR __WeekDayCalculationType = IF ( __FirstDayOfWeek = 0, 7, __FirstDayOfWeek ) + 10
+
+VAR __FiscalStartMonth = 7   -- Räkenskapsåret börjar i juli
+
+VAR __min_invoices = DATE(2021,01,01)
+VAR __max_invoices = DATE(2024,01,01)
+
+VAR __Calendar =
+    VAR __FirstYear = YEAR( __min_invoices )
+    VAR __LastYear = YEAR( __max_invoices )
+    RETURN
+        CALENDAR (
+            DATE ( __FirstYear, 1, 1 ),
+            DATE ( __LastYear, 12, 31 )
+        )
+
+RETURN
+    GENERATE (
+        __Calendar,
+        VAR __IsStandardLocale = IF ( FORMAT( DATE( 2000, 1, 1 ), "oooo", "sv-SE" ) = "oooo", TRUE, FALSE )
+        VAR __MonthFormatString = IF ( __IsStandardLocale, "mmm", "ooo" )
+        VAR __DayFormatString = IF ( __IsStandardLocale, "ddd", "aaa" )
+
+        VAR __Date = [Date]
+        VAR __QuarterNumber = QUARTER ( __Date )
+        VAR __YearNumber = YEAR ( __Date )
+        VAR __MonthName = FORMAT ( __Date, __MonthFormatString, "sv-SE" )
+        VAR __MonthNumber = MONTH ( __Date )
+        VAR __WeekDayNumber = WEEKDAY ( __Date, __WeekDayCalculationType )
+        VAR __WeekDay = FORMAT ( __Date, __DayFormatString, "sv-SE" )
+        
+
+        // Fiscal calcs (jun–maj)
+        VAR __FYMonthNumber = MOD ( __MonthNumber - __FiscalStartMonth + 12, 12 ) + 1
+        VAR __FYEndYear = __YearNumber + IF ( __MonthNumber >= __FiscalStartMonth, 1, 0 )
+        VAR __FYStartYear = __FYEndYear - 1
+        VAR __FYQuarterNumber = INT ( ( __FYMonthNumber - 1 ) / 3 ) + 1
+        VAR __FYLabel = FORMAT ( __FYStartYear, "0000", "sv-SE" ) & "/" & FORMAT ( MOD ( __FYEndYear, 100 ), "00", "sv-SE" )
+        VAR __FYMonthSort = __FYStartYear * 12 + __FYMonthNumber - 1
+        VAR __FYQuarterSort = __FYStartYear * 4 + __FYQuarterNumber - 1
+
+        RETURN
+            ROW (
+                // VANLIGA KOLUMNER (oförändrade)
+                "År", __YearNumber,
+                "År - kvartal (nr)", CONVERT ( __YearNumber * 4 + __QuarterNumber - 1, INTEGER ),
+                "År - kvartal", FORMAT ( __QuarterNumber, "\Q0", "sv-SE" ) & "-" & FORMAT ( __YearNumber, "0000", "sv-SE" ),
+                "Kvartal", FORMAT ( __QuarterNumber, "\Q0", "sv-SE" ),
+                "År - månad", FORMAT ( __Date, __MonthFormatString & " yyyy", "sv-SE" ),
+                "År - månad (nr)", __YearNumber * 12 + __MonthNumber - 1,
+                "År - månad (-01)", FORMAT ( __Date, "yyyy-MM", "sv-SE" ),
+                "Månad", __MonthName,
+                "Månad (nr)", __MonthNumber,
+                "Veckodag (nr)", __WeekDayNumber,
+                "Veckodag", __WeekDay,
+
+                // RÄKENSKAPSÅR (NYA KOLUMNER)
+                "Räkenskapsår", __FYLabel,                      -- t.ex. 2024/25
+                "Räkenskapsår (slut)", __FYEndYear,                           -- t.ex. 2025
+                "Räkenskapsår (start)", __FYStartYear,                        -- t.ex. 2024
+                "Räkenskapskvartal (nr)", __FYQuarterSort,                    -- sortnyckel
+                "Räkenskapskvartal", "Q" & FORMAT ( __FYQuarterNumber, "0", "sv-SE" ) & " " & __FYLabel,   -- t.ex. Q1 2024/25
+                "Räkenskapsmånad", __MonthName,                                   -- Same as regular month but with another sort order to match fiscal period.
+                "Räkenskapsmånad (nr)", __FYMonthNumber,                      -- 1..12 med start i juni
+                "Räkenskapsår - månad", __FYLabel & " " & __MonthName,      -- t.ex. 2024/25 jun
+                "Räkenskapsår - månad (nr)", __FYMonthSort                    -- sortnyckel
+            )
+    )
