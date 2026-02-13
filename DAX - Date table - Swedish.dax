@@ -1,4 +1,4 @@
-﻿Beställningsdatum = 
+﻿AutomaticDateTable = 
 --
 --     Configuration
 --
@@ -49,12 +49,12 @@ RETURN
             ROW (
                 // VANLIGA KOLUMNER (oförändrade)
                 "År", __YearNumber,
-                "År - kvartal (nr)", CONVERT ( __YearNumber * 4 + __QuarterNumber - 1, INTEGER ),
-                "År - kvartal", FORMAT ( __QuarterNumber, "\Q0", "sv-SE" ) & "-" & FORMAT ( __YearNumber, "0000", "sv-SE" ),
+                "År - kvartal (int)", CONVERT ( __YearNumber * 4 + __QuarterNumber - 1, INTEGER ),
+                "Kvartal - år", FORMAT ( __QuarterNumber, "\Q0", "sv-SE" ) & "-" & FORMAT ( __YearNumber, "0000", "sv-SE" ),
                 "Kvartal", FORMAT ( __QuarterNumber, "\Q0", "sv-SE" ),
                 "År - månad", FORMAT ( __Date, __MonthFormatString & " yyyy", "sv-SE" ),
-                "År - månad (nr)", __YearNumber * 12 + __MonthNumber - 1,
-                "År - månad (-01)", FORMAT ( __Date, "yyyy-MM", "sv-SE" ),
+                "År - månad (int)", __YearNumber * 12 + __MonthNumber - 1,
+                "År - månad (nr)", FORMAT ( __Date, "yyyy-MM", "sv-SE" ),
                 "Månad", __MonthName,
                 "Månad (nr)", __MonthNumber,
                 "Veckodag (nr)", __WeekDayNumber,
@@ -64,11 +64,11 @@ RETURN
                 "Räkenskapsår", __FYLabel,                      -- t.ex. 2024/25
                 "Räkenskapsår (slut)", __FYEndYear,                           -- t.ex. 2025
                 "Räkenskapsår (start)", __FYStartYear,                        -- t.ex. 2024
-                "Räkenskapskvartal (nr)", __FYQuarterSort,                    -- sortnyckel
+                "Räkenskapskvartal (int)", __FYQuarterSort,                    -- sortnyckel
                 "Räkenskapskvartal", "Q" & FORMAT ( __FYQuarterNumber, "0", "sv-SE" ) & " " & __FYLabel,   -- t.ex. Q1 2024/25
                 "Räkenskapsmånad", __MonthName,                                   -- Same as regular month but with another sort order to match fiscal period.
                 "Räkenskapsmånad (nr)", __FYMonthNumber,                      -- 1..12 med start i juni
                 "Räkenskapsår - månad", __FYLabel & " " & __MonthName,      -- t.ex. 2024/25 jun
-                "Räkenskapsår - månad (nr)", __FYMonthSort                    -- sortnyckel
+                "Räkenskapsår - månad (int)", __FYMonthSort                    -- sortnyckel
             )
     )

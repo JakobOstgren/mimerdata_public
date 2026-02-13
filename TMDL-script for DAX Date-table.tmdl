@@ -1,0 +1,183 @@
+createOrReplace
+
+	table Datum
+		excludeFromAutomaticAggregations
+		dataCategory: Time
+
+		column Datum
+			isUnique
+			isKey
+			formatString: Short Date
+			summarizeBy: none
+			isNameInferred
+			sourceColumn: AutomaticDateTable[Date]
+			columnOrigin: AutomaticDateTable.Date
+
+		column År
+			formatString: 0
+			summarizeBy: none
+			isNameInferred
+			sourceColumn: AutomaticDateTable[År]
+			columnOrigin: AutomaticDateTable.År
+
+		column 'År - kvartal (int)'
+			displayFolder: [Sorteringskolumner]
+			isHidden
+			formatString: 0
+			summarizeBy: none
+			isNameInferred
+			sourceColumn: AutomaticDateTable[År - kvartal (int)]
+			columnOrigin: AutomaticDateTable.'År - kvartal (int)'
+
+		column 'Kvartal - år'
+			summarizeBy: none
+			isNameInferred
+			sourceColumn: AutomaticDateTable[Kvartal - år]
+			columnOrigin: AutomaticDateTable.'Kvartal - år'
+			sortByColumn: 'År - kvartal (int)'
+
+		column Kvartal
+			summarizeBy: none
+			isNameInferred
+			sourceColumn: AutomaticDateTable[Kvartal]
+			columnOrigin: AutomaticDateTable.Kvartal
+
+		column 'År - månad'
+			summarizeBy: none
+			isNameInferred
+			sourceColumn: AutomaticDateTable[År - månad]
+			columnOrigin: AutomaticDateTable.'År - månad'
+			sortByColumn: 'År - månad (int)' 
+
+		column 'År - månad (int)'
+			displayFolder: [Sorteringskolumner]
+			isHidden
+			formatString: 0
+			summarizeBy: none
+			isNameInferred
+			sourceColumn: AutomaticDateTable[År - månad (int)]
+			columnOrigin: AutomaticDateTable.'År - månad (int)'
+
+
+		column 'År - månad (-01)'
+			summarizeBy: none
+			isNameInferred
+			sourceColumn: AutomaticDateTable[År - månad (-01)]
+			columnOrigin: AutomaticDateTable.'År - månad (-01)'
+
+
+		column Månad
+			summarizeBy: none
+			isNameInferred
+			sourceColumn: AutomaticDateTable[Månad]
+			columnOrigin: AutomaticDateTable.Månad
+			sortByColumn: 'Månad (nr)'
+
+
+		column 'Månad (nr)'
+			formatString: 0
+			summarizeBy: none
+			isNameInferred
+			sourceColumn: AutomaticDateTable[Månad (nr)]
+			columnOrigin: AutomaticDateTable.'Månad (nr)'
+
+
+		column 'Veckodag (nr)'
+			formatString: 0
+			summarizeBy: none
+			isNameInferred
+			sourceColumn: AutomaticDateTable[Veckodag (nr)]
+			columnOrigin: AutomaticDateTable.'Veckodag (nr)'
+
+
+		column Veckodag
+			summarizeBy: none
+			isNameInferred
+			sourceColumn: AutomaticDateTable[Veckodag]
+			columnOrigin: AutomaticDateTable.Veckodag
+			sortByColumn: 'Veckodag (nr)'
+
+
+		column 'Räkenskapsår (start)'
+			displayFolder: [Räkenskapsår]
+			formatString: 0
+			summarizeBy: none
+			isNameInferred
+			sourceColumn: AutomaticDateTable[Räkenskapsår (start)]
+			columnOrigin: AutomaticDateTable.'Räkenskapsår (start)'
+
+
+		column 'Räkenskapskvartal (int)'
+			dataType: int64
+			isHidden
+			formatString: 0
+			displayFolder: [Sorteringskolumner]
+			summarizeBy: none
+			isNameInferred
+			sourceColumn: AutomaticDateTable[Räkenskapskvartal (int)]
+			columnOrigin: AutomaticDateTable.'Räkenskapskvartal (int)'
+
+
+		column Räkenskapskvartal
+			displayFolder: [Räkenskapsår]
+			summarizeBy: none
+			isNameInferred
+			sourceColumn: AutomaticDateTable[Räkenskapskvartal]
+			columnOrigin: AutomaticDateTable.Räkenskapskvartal
+
+
+		column 'Räkenskapsmånad (nr)'
+			displayFolder: [Räkenskapsår]
+			formatString: 0
+			summarizeBy: none
+			isNameInferred
+			sourceColumn: AutomaticDateTable[Räkenskapsmånad (nr)]
+			columnOrigin: AutomaticDateTable.'Räkenskapsmånad (nr)'
+
+
+		column 'Räkenskapsår - månad'
+			displayFolder: [Räkenskapsår]
+			summarizeBy: none
+			isNameInferred
+			sourceColumn: AutomaticDateTable[Räkenskapsår - månad]
+			columnOrigin: AutomaticDateTable.'Räkenskapsår - månad'
+			sortByColumn: 'Räkenskapsår - månad (int)'
+
+
+		column 'Räkenskapsår - månad (int)'
+			displayFolder: [Sorteringskolumner]
+			isHidden
+			formatString: 0
+			summarizeBy: none
+			isNameInferred
+			sourceColumn: AutomaticDateTable[Räkenskapsår - månad (int)]
+			columnOrigin: AutomaticDateTable.'Räkenskapsår - månad (int)'
+
+
+		column 'Räkenskapsår (slut)'
+			displayFolder: [Räkenskapsår]
+			formatString: 0
+			summarizeBy: none
+			isNameInferred
+			sourceColumn: AutomaticDateTable[Räkenskapsår (slut)]
+			columnOrigin: AutomaticDateTable.'Räkenskapsår (slut)'
+
+
+		column Räkenskapsår
+			displayFolder: [Räkenskapsår]
+			summarizeBy: none
+			isNameInferred
+			sourceColumn: AutomaticDateTable[Räkenskapsår]
+			columnOrigin: AutomaticDateTable.Räkenskapsår
+
+		column Räkenskapsmånad
+			displayFolder: [Räkenskapsår]
+			summarizeBy: none
+			isNameInferred
+			sourceColumn: AutomaticDateTable[Räkenskapsmånad]
+			columnOrigin: AutomaticDateTable.Räkenskapsmånad
+			sortByColumn: 'Räkenskapsmånad (nr)'
+
+		partition Datum = calculated
+			mode: import
+			source = 'AutomaticDateTable'
